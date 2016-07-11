@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<extension key="com.joineryhq.relationshipjobtitle" type="module">
+  <file>relationshipjobtitle</file>
+  <name>Relationship Job Title</name>
+  <description>On the Contact Relationships tab, display the contact's Job Title together with the current employer.</description>
+  <license>GPL-3.0</license>
+  <maintainer>
+    <author>Allen Shaw</author>
+    <email>allen@JoineryHQ.com</email>
+  </maintainer>
+  <releaseDate>2016-07-06</releaseDate>
+  <version>1.0</version>
+  <develStage>alpha</develStage>
+  <compatibility>
+    <ver>4.6</ver>
+  </compatibility>
+  <comments></comments>
+  <urls>
+    <url desc="Main extension page and bare-bones documentation">https://github.com/twomice/com.joineryhq.relationshipjobtitle</url>
+    <url desc="Support">https://github.com/twomice/com.joineryhq.relationshipjobtitle/issues</url>
+  </urls>
+  <civix>
+    <namespace>CRM/Relationshipjobtitle</namespace>
+  </civix>
+</extension>
