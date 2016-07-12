@@ -12,6 +12,18 @@ function relationshipjobtitle_civicrm_pageRun(&$page) {
   if ($page->getVar('_name') == 'CRM_Contact_Page_View_Relationship'){
     // Get current employer ID and job title for this contact.
     $api_params = array(
+      'name_a_b' => 'Employee of',
+      'sequential' => 1,
+    );
+    $relationship_type_result = civicrm_api3('RelationshipType', 'get', $api_params);
+    if (empty($relationship_type_result['id'])) {
+      CRM_Core_Error::debug_log_message('relationshipjobtitle: Unable to find "Employee of" relationship type.');
+      return;
+    }
+
+    $relationship_type_id = $relationship_type_result['id'];
+
+    $api_params = array(
       'id' => $page->_contactId,
       'sequential' => 1,
       'return' => array(
@@ -24,7 +36,7 @@ function relationshipjobtitle_civicrm_pageRun(&$page) {
     if (!empty($contact_result['values'][0]['current_employer_id']) && !empty($contact_result['values'][0]['job_title'])) {
       // Get the ID of the current employee relationship.
       $api_params = array(
-        'relationship_type_id' => 5,
+        'relationship_type_id' => $relationship_type_id,
         'contact_id_a' => $page->_contactId,
         'contact_id_b' => $contact_result['values'][0]['current_employer_id'],
         'is_active' => 1,
