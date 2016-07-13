@@ -3,6 +3,38 @@
 require_once 'relationshipjobtitle.civix.php';
 
 /**
+ * Get the value of the given config setting.
+ */
+function _relationshipjobtitle_get_setting($name) {
+  // If this is the  first time, prime a $settings array with the default values,
+  // overridden with any values found by CRM_Core_BAO_Setting::getItem().
+  static $settings = array();
+  if (empty($settings)) {
+    $defaults = array(
+      'apply_all_employee_relationships' => FALSE,
+    );
+
+    $config = CRM_Core_Config::singleton();
+
+
+    foreach ($defaults as $key => $value) {
+      $config_value = CRM_Core_BAO_Setting::getItem('relationshipjobtitle', $key);
+      if (!is_null($config_value)) {
+        $settings[$key] = $config_value;
+      }
+    }
+    $settings = array_replace_recursive($defaults, $settings);
+
+    // If the setting is still unset, set it from CRM_Core_BAO_Setting::getItem().
+    if (!array_key_exists($name, $settings)) {
+      $settings[$name] = CRM_Core_BAO_Setting::getItem('relationshipjobtitle', $key);
+    }
+  }
+  return $settings[$name];
+}
+
+
+/**
  * Implementation of hook_civicrm_pageRun
  *
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_pageRun
@@ -10,7 +42,9 @@ require_once 'relationshipjobtitle.civix.php';
 function relationshipjobtitle_civicrm_pageRun(&$page) {
   // Only take action on the Relationships tab.
   if ($page->getVar('_name') == 'CRM_Contact_Page_View_Relationship'){
-    // Get current employer ID and job title for this contact.
+    $relationship_job_titles = array();
+    
+    // Get relationship type ID.
     $api_params = array(
       'name_a_b' => 'Employee of',
       'sequential' => 1,
@@ -20,39 +54,79 @@ function relationshipjobtitle_civicrm_pageRun(&$page) {
       CRM_Core_Error::debug_log_message('relationshipjobtitle: Unable to find "Employee of" relationship type.');
       return;
     }
-
     $relationship_type_id = $relationship_type_result['id'];
 
+    // Get relevant contact details
     $api_params = array(
       'id' => $page->_contactId,
       'sequential' => 1,
       'return' => array(
         'current_employer_id',
         'job_title',
+        'contact_type',
       ),
     );
     $contact_result = civicrm_api3('contact', 'get', $api_params);
-    // Only take action if the contact has both a current employer and a job title.
-    if (!empty($contact_result['values'][0]['current_employer_id']) && !empty($contact_result['values'][0]['job_title'])) {
-      // Get the ID of the current employee relationship.
-      $api_params = array(
-        'relationship_type_id' => $relationship_type_id,
-        'contact_id_a' => $page->_contactId,
-        'contact_id_b' => $contact_result['values'][0]['current_employer_id'],
-        'is_active' => 1,
-      );
-      $relationship_result = civicrm_api3('relationship', 'get', $api_params);
-      if (!empty($relationship_result['id'])) {
-        // If the relationship is found, add the JavaScript file, and assign
-        // relevant variables in JavaScript scope.
-        CRM_Core_Resources::singleton()->addScriptFile('com.joineryhq.relationshipjobtitle', 'js/relationshipjobtitle.js');
-        $js_vars = array(
-          'current_employer_relationship_id' => $relationship_result['id'],
-          'job_title' => $contact_result['values'][0]['job_title'],
+
+    // If contact is Individual
+    switch ($contact_result['values'][0]['contact_type']) {
+      case 'Individual':
+        // Only take action if the contact has both a current employer and a job title.
+        if (!empty($contact_result['values'][0]['current_employer_id']) && !empty($contact_result['values'][0]['job_title'])) {
+          // Get the ID of the current employee relationship.
+          $api_params = array(
+            'relationship_type_id' => $relationship_type_id,
+            'contact_id_a' => $page->_contactId,
+            'contact_id_b' => $contact_result['values'][0]['current_employer_id'],
+            'is_active' => 1,
+          );
+          $relationship_result = civicrm_api3('relationship', 'get', $api_params);
+          if (!empty($relationship_result['id'])) {
+            // If the relationship is found, add the JavaScript file, and assign
+            // relevant variables in JavaScript scope.
+            $relationship_job_titles[$relationship_result['id']] = $contact_result['values'][0]['job_title'];
+          }
+        }
+        break;
+
+      case 'Organization':
+        // Get all current employee relationships
+        $api_params = array(
+          'relationship_type_id' => $relationship_type_id,
+          'is_active' => 1,
+          'sequential' => 1,
         );
-        CRM_Core_Resources::singleton()->addVars('relationshipjobtitle', $js_vars);
-      }
+        $relationships_result = civicrm_api3('relationship', 'get', $api_params);
+        foreach ($relationships_result['values'] as $value) {
+          // Get individual contact for each relationship
+          $api_params = array(
+            'id' => $value['contact_id_a'],
+            'sequential' => 1,
+            'return' => array(
+              'current_employer_id',
+              'job_title',
+              'contact_type',
+            ),
+          );
+          $individual_result = civicrm_api3('contact', 'get', $api_params);
+          // Ignore if organization is not current_employer_id
+          if ($individual_result['values'][0]['current_employer_id'] == $page->_contactId && !empty($individual_result['values'][0]['job_title'])) {
+            $relationship_job_titles[$value['id']] = $individual_result['values'][0]['job_title'];
+          }
+        }
+
+
+        break;
     }
+
+    if (!empty($relationship_job_titles)) {
+      CRM_Core_Resources::singleton()->addScriptFile('com.joineryhq.relationshipjobtitle', 'js/relationshipjobtitle.js');
+      $js_vars = array(
+        'relationship_job_titles' => $relationship_job_titles,
+      );
+      CRM_Core_Resources::singleton()->addVars('relationshipjobtitle', $js_vars);
+    }
+
   }
 }
 
