@@ -11,12 +11,11 @@ function _relationshipjobtitle_get_setting($name) {
   static $settings = array();
   if (empty($settings)) {
     $defaults = array(
-      'apply_all_employee_relationships' => FALSE,
+      'limit_to_current_employer' => TRUE,
       'relationship_type_ids' => array(),
     );
 
     $config = CRM_Core_Config::singleton();
-
 
     foreach ($defaults as $key => $value) {
       $config_value = CRM_Core_BAO_Setting::getItem('relationshipjobtitle', $key);
@@ -34,10 +33,14 @@ function _relationshipjobtitle_get_setting($name) {
   return $settings[$name];
 }
 
+/**
+ * Get an array of relevant relationship type IDs
+ */
 function _relationshipjobtitle_get_relationship_type_ids() {
+  // Get them from the setting, if it is defined.
   $relationship_type_ids = _relationshipjobtitle_get_setting('relationship_type_ids');
   if (!is_array($relationship_type_ids) || empty($relationship_type_ids)) {
-    // Get relationship type ID.
+    // If we still have no value, default to the relationship type ID for 'employer'.
     $api_params = array(
       'name_a_b' => 'Employee of',
       'sequential' => 1,
@@ -57,20 +60,20 @@ function _relationshipjobtitle_append_relationship_job_titles(&$relationship_job
     // If contact is Individual
     switch ($contact['contact_type']) {
       case 'Individual':
-        // Only take action if the contact has both a current employer and a job title.
-        if (!empty($contact['current_employer_id']) && !empty($contact['job_title'])) {
-          // Get the ID of the current employee relationship.
+        // Only take action if the contact has a job title.
+        if (!empty($contact['job_title'])) {
+          // Get all relationships of this type for contact.
           $api_params = array(
             'relationship_type_id' => $relationship_type_id,
             'contact_id_a' => $contact['id'],
-            'contact_id_b' => $contact['current_employer_id'],
             'is_active' => 1,
           );
           $relationship_result = civicrm_api3('relationship', 'get', $api_params);
-          if (!empty($relationship_result['id'])) {
-            // If the relationship is found, add the JavaScript file, and assign
-            // relevant variables in JavaScript scope.
-            $relationship_job_titles[$relationship_result['id']] = $contact['job_title'];
+          foreach ($relationship_result['values'] as $relationship) {
+            // Add the relationship to the list, if appropriate.
+            if (!_relationshipjobtitle_get_setting('limit_to_current_employer') || $relationship['contact_id_b'] == $contact['current_employer_id']) {
+              $relationship_job_titles[$relationship['id']] = $contact['job_title'];
+            }
           }
         }
         break;
@@ -83,10 +86,10 @@ function _relationshipjobtitle_append_relationship_job_titles(&$relationship_job
           'sequential' => 1,
         );
         $relationships_result = civicrm_api3('relationship', 'get', $api_params);
-        foreach ($relationships_result['values'] as $value) {
+        foreach ($relationships_result['values'] as $relationship) {
           // Get individual contact for each relationship
           $api_params = array(
-            'id' => $value['contact_id_a'],
+            'id' => $relationship['contact_id_a'],
             'sequential' => 1,
             'return' => array(
               'current_employer_id',
@@ -95,9 +98,11 @@ function _relationshipjobtitle_append_relationship_job_titles(&$relationship_job
             ),
           );
           $individual_result = civicrm_api3('contact', 'get', $api_params);
-          // Ignore if organization is not current_employer_id
-          if ($individual_result['values'][0]['current_employer_id'] == $contact['id'] && !empty($individual_result['values'][0]['job_title'])) {
-            $relationship_job_titles[$value['id']] = $individual_result['values'][0]['job_title'];
+          // Add the relationship to the list, if appropriate.
+          if (!empty($individual_result['values'][0]['job_title'])) {
+            if (!_relationshipjobtitle_get_setting('limit_to_current_employer') || $individual_result['values'][0]['current_employer_id'] == $contact['id']) {
+              $relationship_job_titles[$relationship['id']] = $individual_result['values'][0]['job_title'];
+            }
           }
         }
         break;
