@@ -12,7 +12,7 @@ Just install and go.
 Really.
 
 
-But if you want to be special, try defining these configurations to civicrm.settings.php:
+But if you want to be special, try defining these configurations in civicrm.settings.php:
 
 ### limit_to_current_employer
 Boolean; default TRUE.
