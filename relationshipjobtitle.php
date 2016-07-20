@@ -18,7 +18,7 @@ function _relationshipjobtitle_get_setting($name) {
     $config = CRM_Core_Config::singleton();
 
     foreach ($defaults as $key => $value) {
-      $config_value = CRM_Core_BAO_Setting::getItem('relationshipjobtitle', $key);
+      $config_value = CRM_Core_BAO_Setting::getItem('com.joineryhq.relationshipjobtitle', $key);
       if (!is_null($config_value)) {
         $settings[$key] = $config_value;
       }
@@ -27,7 +27,7 @@ function _relationshipjobtitle_get_setting($name) {
 
     // If the setting is still unset, set it from CRM_Core_BAO_Setting::getItem().
     if (!array_key_exists($name, $settings)) {
-      $settings[$name] = CRM_Core_BAO_Setting::getItem('relationshipjobtitle', $key);
+      $settings[$name] = CRM_Core_BAO_Setting::getItem('com.joineryhq.relationshipjobtitle', $key);
     }
   }
   return $settings[$name];
