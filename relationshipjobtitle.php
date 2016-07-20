@@ -67,6 +67,9 @@ function _relationshipjobtitle_append_relationship_job_titles(&$relationship_job
             'relationship_type_id' => $relationship_type_id,
             'contact_id_a' => $contact['id'],
             'is_active' => 1,
+            'options' => array(
+              'limit' => 10000,
+            ),
           );
           $relationship_result = civicrm_api3('relationship', 'get', $api_params);
           foreach ($relationship_result['values'] as $relationship) {
@@ -82,8 +85,12 @@ function _relationshipjobtitle_append_relationship_job_titles(&$relationship_job
         // Get all active relationships of this type
         $api_params = array(
           'relationship_type_id' => $relationship_type_id,
+          'contact_id_b' => $contact['id'],
           'is_active' => 1,
           'sequential' => 1,
+          'options' => array(
+            'limit' => 10000,
+          ),
         );
         $relationships_result = civicrm_api3('relationship', 'get', $api_params);
         foreach ($relationships_result['values'] as $relationship) {
