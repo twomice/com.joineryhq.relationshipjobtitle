@@ -147,8 +147,15 @@ function relationshipjobtitle_civicrm_pageRun(&$page) {
 
     if (!empty($relationship_job_titles)) {
       CRM_Core_Resources::singleton()->addScriptFile('com.joineryhq.relationshipjobtitle', 'js/relationshipjobtitle.js');
+      // pageRunId:
+      // The list of job titles is keyed to a unique identifier for each page load.
+      // See comments on "pageRunId" in js/relationshipjobtitle.js.
+      $pageRun_id = uniqid();
       $js_vars = array(
-        'relationship_job_titles' => $relationship_job_titles,
+        'relationshipJobTitles' => array(
+          $pageRun_id => $relationship_job_titles,
+        ),
+        'pageRunId' => $pageRun_id,
       );
       CRM_Core_Resources::singleton()->addVars('relationshipjobtitle', $js_vars);
     }
