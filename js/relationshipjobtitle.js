@@ -21,9 +21,18 @@ CRM.$(document).ready(function($){
   CRM.$('table.crm-contact-relationship-selector-current').on( 'draw.dt', function (e, settings) {
     var jobTitles = CRM.vars.relationshipjobtitle.relationshipJobTitles[pageRunId]
     for (i in jobTitles) {
-      var trId = 'relationship-'+ i
-      $(this).find('tr#' + trId + '>td.crm-contact-relationship-type div.relationshipjobtitle-jobtitle').remove();
-      $(this).find('tr#' + trId + '>td.crm-contact-relationship-type').append('<div class="relationshipjobtitle-jobtitle"><em>(' + jobTitles[i] + ')</em></div>')
+      // For CiviCRM 4.6
+      if (CRM.vars.relationshipjobtitle.civiMinorVersion == '4.6') {
+        var tdSelector = 'td.crm-contact-relationship-type';
+        var trId = 'relationship-'+ i;
+      }
+      // For CiviCRM 4.7
+      else if (CRM.vars.relationshipjobtitle.civiMinorVersion == '4.7') {
+        var tdSelector = 'td:first-child';
+        var trId = i;
+      }
+      $(this).find('tr#' + trId + '>' + tdSelector + ' div.relationshipjobtitle-jobtitle').remove();
+      $(this).find('tr#' + trId + '>'+ tdSelector).append('<div class="relationshipjobtitle-jobtitle"><em>(' + jobTitles[i] + ')</em></div>')
     }
   });
 });

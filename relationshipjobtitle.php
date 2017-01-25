@@ -156,6 +156,7 @@ function relationshipjobtitle_civicrm_pageRun(&$page) {
           $pageRun_id => $relationship_job_titles,
         ),
         'pageRunId' => $pageRun_id,
+        'civiMinorVersion' => implode('.', array_slice(explode('.',  CRM_Utils_System::version()), 0, 2))
       );
       CRM_Core_Resources::singleton()->addVars('relationshipjobtitle', $js_vars);
     }
