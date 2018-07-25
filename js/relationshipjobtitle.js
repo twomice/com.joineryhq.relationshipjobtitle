@@ -21,15 +21,18 @@ CRM.$(document).ready(function($){
   CRM.$('table.crm-contact-relationship-selector-current').on( 'draw.dt', function (e, settings) {
     var jobTitles = CRM.vars.relationshipjobtitle.relationshipJobTitles[pageRunId]
     for (i in jobTitles) {
-      // For CiviCRM 4.6
-      if (CRM.vars.relationshipjobtitle.civiMinorVersion == '4.6') {
-        var tdSelector = 'td.crm-contact-relationship-type';
-        var trId = 'relationship-'+ i;
-      }
-      // For CiviCRM 4.7
-      else if (CRM.vars.relationshipjobtitle.civiMinorVersion == '4.7') {
+      // For CiviCRM 4.7 and 5.x
+      if (
+        CRM.vars.relationshipjobtitle.civiMajorVersion == '5'
+        || CRM.vars.relationshipjobtitle.civiMinorVersion == '4.7'
+      ) {
         var tdSelector = 'td:first-child';
         var trId = i;
+      }
+      // For CiviCRM 4.6
+      else if (CRM.vars.relationshipjobtitle.civiMinorVersion == '4.6') {
+        var tdSelector = 'td.crm-contact-relationship-type';
+        var trId = 'relationship-'+ i;
       }
       $(this).find('tr#' + trId + '>' + tdSelector + ' div.relationshipjobtitle-jobtitle').remove();
       $(this).find('tr#' + trId + '>'+ tdSelector).append('<div class="relationshipjobtitle-jobtitle"><em>(' + jobTitles[i] + ')</em></div>')

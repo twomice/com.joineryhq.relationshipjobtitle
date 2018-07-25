@@ -151,12 +151,14 @@ function relationshipjobtitle_civicrm_pageRun(&$page) {
       // The list of job titles is keyed to a unique identifier for each page load.
       // See comments on "pageRunId" in js/relationshipjobtitle.js.
       $pageRun_id = uniqid();
+      $versionParts = explode('.',  CRM_Utils_System::version());
       $js_vars = array(
         'relationshipJobTitles' => array(
           $pageRun_id => $relationship_job_titles,
         ),
         'pageRunId' => $pageRun_id,
-        'civiMinorVersion' => implode('.', array_slice(explode('.',  CRM_Utils_System::version()), 0, 2))
+        'civiMinorVersion' => implode('.', array_slice($versionParts, 0, 2)),
+        'civiMajorVersion' => array_slice($versionParts, 0, 1),
       );
       CRM_Core_Resources::singleton()->addVars('relationshipjobtitle', $js_vars);
     }
