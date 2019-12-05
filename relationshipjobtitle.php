@@ -124,7 +124,7 @@ function _relationshipjobtitle_append_relationship_job_titles(&$relationship_job
  */
 function relationshipjobtitle_civicrm_pageRun(&$page) {
   // Only take action on the Relationships tab.
-  if ($page->getVar('_name') == 'CRM_Contact_Page_View_Relationship' && $page->_action == CRM_Core_Action::BROWSE) {
+  if ($page->getVar('_name') == 'CRM_Contact_Page_View_Relationship' && $page->getVar('_action') == CRM_Core_Action::BROWSE) {
     $relationship_job_titles = array();
 
     $relationship_type_ids = _relationshipjobtitle_get_relationship_type_ids();
