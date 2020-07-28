@@ -13,29 +13,31 @@ CRM.$(document).ready(function($){
   // can be found in CRM.vars.relationshipjobtitle.pageRunId.  This way, each
   // new page load creates a new property of the CRM.vars.relationshipjobtitle.relationshipJobTitles
   // object, and we don't care if it leaves the old property in place.
-  var pageRunId = CRM.vars.relationshipjobtitle.pageRunId
+  var pageRunId = CRM.vars.relationshipjobtitle.pageRunId;
 
   // Monitor relationships table for re-drawing by DataTables; we can't simply
   // use $.ready() here, because DataTables re-draws the table on every page
   // load, after (or as part of) $.ready().
   CRM.$('table.crm-contact-relationship-selector-current').on( 'draw.dt', function (e, settings) {
-    var jobTitles = CRM.vars.relationshipjobtitle.relationshipJobTitles[pageRunId]
-    for (i in jobTitles) {
+    var jobTitles = CRM.vars.relationshipjobtitle.relationshipJobTitles[pageRunId];
+    for (var i in jobTitles) {
       // For CiviCRM 4.7 and 5.x
+      var tdSelector = '';
+      var trId = '';
+
       if (
-        CRM.vars.relationshipjobtitle.civiMajorVersion == '5'
-        || CRM.vars.relationshipjobtitle.civiMinorVersion == '4.7'
+        CRM.vars.relationshipjobtitle.civiMajorVersion == '5' || CRM.vars.relationshipjobtitle.civiMinorVersion == '4.7'
       ) {
-        var tdSelector = 'td:first-child';
-        var trId = i;
+        tdSelector = 'td:first-child';
+        trId = i;
       }
       // For CiviCRM 4.6
       else if (CRM.vars.relationshipjobtitle.civiMinorVersion == '4.6') {
-        var tdSelector = 'td.crm-contact-relationship-type';
-        var trId = 'relationship-'+ i;
+        tdSelector = 'td.crm-contact-relationship-type';
+        trId = 'relationship-'+ i;
       }
       $(this).find('tr#' + trId + '>' + tdSelector + ' div.relationshipjobtitle-jobtitle').remove();
-      $(this).find('tr#' + trId + '>'+ tdSelector).append('<div class="relationshipjobtitle-jobtitle"><em>(' + jobTitles[i] + ')</em></div>')
+      $(this).find('tr#' + trId + '>'+ tdSelector).append('<div class="relationshipjobtitle-jobtitle"><em>(' + jobTitles[i] + ')</em></div>');
     }
   });
 });

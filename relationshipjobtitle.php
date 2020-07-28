@@ -118,7 +118,7 @@ function _relationshipjobtitle_append_relationship_job_titles(&$relationship_job
 }
 
 /**
- * Implementation of hook_civicrm_pageRun
+ * Implements hook_civicrm_pageRun().
  *
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_pageRun
  */
@@ -143,7 +143,7 @@ function relationshipjobtitle_civicrm_pageRun(&$page) {
     $page_contact = $page_contact_result['values'][0];
 
     $relationship_job_titles = array();
-     _relationshipjobtitle_append_relationship_job_titles($relationship_job_titles, $page_contact, $relationship_type_ids);
+    _relationshipjobtitle_append_relationship_job_titles($relationship_job_titles, $page_contact, $relationship_type_ids);
 
     if (!empty($relationship_job_titles)) {
       CRM_Core_Resources::singleton()->addScriptFile('com.joineryhq.relationshipjobtitle', 'js/relationshipjobtitle.js');
@@ -151,7 +151,7 @@ function relationshipjobtitle_civicrm_pageRun(&$page) {
       // The list of job titles is keyed to a unique identifier for each page load.
       // See comments on "pageRunId" in js/relationshipjobtitle.js.
       $pageRun_id = uniqid();
-      $versionParts = explode('.',  CRM_Utils_System::version());
+      $versionParts = explode('.', CRM_Utils_System::version());
       $js_vars = array(
         'relationshipJobTitles' => array(
           $pageRun_id => $relationship_job_titles,
@@ -166,7 +166,7 @@ function relationshipjobtitle_civicrm_pageRun(&$page) {
 }
 
 /**
- * Implementation of hook_civicrm_config
+ * Implements hook_civicrm_config().
  *
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_config
  */
@@ -175,9 +175,7 @@ function relationshipjobtitle_civicrm_config(&$config) {
 }
 
 /**
- * Implementation of hook_civicrm_xmlMenu
- *
- * @param $files array(string)
+ * Implements hook_civicrm_xmlMenu().
  *
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_xmlMenu
  */
@@ -186,7 +184,7 @@ function relationshipjobtitle_civicrm_xmlMenu(&$files) {
 }
 
 /**
- * Implementation of hook_civicrm_install
+ * Implements hook_civicrm_install().
  *
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_install
  */
@@ -195,7 +193,7 @@ function relationshipjobtitle_civicrm_install() {
 }
 
 /**
- * Implementation of hook_civicrm_uninstall
+ * Implements hook_civicrm_uninstall().
  *
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_uninstall
  */
@@ -204,7 +202,7 @@ function relationshipjobtitle_civicrm_uninstall() {
 }
 
 /**
- * Implementation of hook_civicrm_enable
+ * Implements hook_civicrm_enable().
  *
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_enable
  */
@@ -213,7 +211,7 @@ function relationshipjobtitle_civicrm_enable() {
 }
 
 /**
- * Implementation of hook_civicrm_disable
+ * Implements hook_civicrm_disable().
  *
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_disable
  */
@@ -222,13 +220,7 @@ function relationshipjobtitle_civicrm_disable() {
 }
 
 /**
- * Implementation of hook_civicrm_upgrade
- *
- * @param $op string, the type of operation being performed; 'check' or 'enqueue'
- * @param $queue CRM_Queue_Queue, (for 'enqueue') the modifiable list of pending up upgrade tasks
- *
- * @return mixed  based on op. for 'check', returns array(boolean) (TRUE if upgrades are pending)
- *                for 'enqueue', returns void
+ * Implements hook_civicrm_upgrade().
  *
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_upgrade
  */
@@ -237,7 +229,7 @@ function relationshipjobtitle_civicrm_upgrade($op, CRM_Queue_Queue $queue = NULL
 }
 
 /**
- * Implementation of hook_civicrm_managed
+ * Implements hook_civicrm_managed().
  *
  * Generate a list of entities to create/deactivate/delete when this module
  * is installed, disabled, uninstalled.
@@ -249,7 +241,7 @@ function relationshipjobtitle_civicrm_managed(&$entities) {
 }
 
 /**
- * Implementation of hook_civicrm_caseTypes
+ * Implements hook_civicrm_caseTypes().
  *
  * Generate a list of case-types
  *
@@ -262,7 +254,7 @@ function relationshipjobtitle_civicrm_caseTypes(&$caseTypes) {
 }
 
 /**
- * Implementation of hook_civicrm_alterSettingsFolders
+ * Implements hook_civicrm_alterSettingsFolders().
  *
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_alterSettingsFolders
  */
