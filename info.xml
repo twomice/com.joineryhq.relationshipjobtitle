@@ -8,8 +8,8 @@
     <author>Allen Shaw</author>
     <email>allen@JoineryHQ.com</email>
   </maintainer>
-  <releaseDate>2019-12-05</releaseDate>
-  <version>2.2</version>
+  <releaseDate>2021-04-20</releaseDate>
+  <version>2.3</version>
   <develStage>stable</develStage>
   <compatibility>
     <ver>4.7</ver>
