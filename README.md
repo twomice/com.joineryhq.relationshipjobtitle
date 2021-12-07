@@ -21,7 +21,7 @@ By default, this extension will only show the job title for a relationship if
 the organization is the individual's current employer, since that's usually the
 expected meaning of the Job Title field. But if you want to force the job title
 to appear on all current employer/employee relationships for an individual, set
-this to TRUE, like so:
+this to FALSE, like so:
 ```php
 global $civicrm_setting;
 $civicrm_setting['com.joineryhq.relationshipjobtitle']['limit_to_current_employer'] = FALSE;
