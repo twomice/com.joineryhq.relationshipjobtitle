@@ -12,7 +12,7 @@
   <version>2.4.0</version>
   <develStage>stable</develStage>
   <compatibility>
-    <ver>5.45</ver>
+    <ver>5.51</ver>
   </compatibility>
   <comments/>
   <urls>
@@ -21,12 +21,13 @@
   </urls>
   <civix>
     <namespace>CRM/Relationshipjobtitle</namespace>
-    <format>24.09.1</format>
+    <format>25.10.2</format>
   </civix>
   <classloader>
     <psr4 prefix="Civi\" path="Civi"/>
   </classloader>
   <mixins>
     <mixin>entity-types-php@2.0.0</mixin>
+    <mixin>scan-classes@1.0.0</mixin>
   </mixins>
 </extension>
