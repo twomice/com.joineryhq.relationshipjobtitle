@@ -16,8 +16,10 @@
   </compatibility>
   <comments/>
   <urls>
-    <url desc="Main extension page and bare-bones documentation">https://github.com/twomice/com.joineryhq.relationshipjobtitle</url>
+    <url desc="Main Extension Page">https://github.com/twomice/com.joineryhq.relationshipjobtitle</url>
     <url desc="Support">https://github.com/twomice/com.joineryhq.relationshipjobtitle/issues</url>
+    <url desc="Documentation">https://github.com/twomice/com.joineryhq.relationshipjobtitle</url>
+    <url desc="Licensing">http://www.gnu.org/licenses/gpl-3.0.html</url>
   </urls>
   <civix>
     <namespace>CRM/Relationshipjobtitle</namespace>
